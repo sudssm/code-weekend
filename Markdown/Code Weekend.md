@@ -11,7 +11,7 @@ Code Weekend is scheduled for *September 6th and 7th, 2014* and will comprise fo
 
 If you already have some coding experience, then feel free to skip the first session. Here's what we expect you to know and have installed before you jump into the second session:
 
-- The basics of how the web works.
+- The basics of how the web works. (HTTP, server requests)
 - HTML/CSS/Javascript to the extent that you can build a simple static webpage.
 - Have Node.JS, MongoDB and Sublime Text installed.
 - Know how to use NPM (Node Package Manager) to install something.
