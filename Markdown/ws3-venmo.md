@@ -74,24 +74,54 @@ Take a peek at this portion of the function here and in context in venmo.js. Fir
 
 So, especially if you learned HTML/CSS earlier in this file, you may be wondering, "what actually is determining what the user sees at page /vemno?" What a great question. They're seeing views/venmo.hjs!
 
-So, you've seen .hjs before, but to reap, the biggest difference between .hjs and html is that you update certain parts of it dynamically based on req.session in node. So, if you remember in the last block of code,
-	
-		req.session.message = "yodelyodelyoda"
+So, you've seen .hjs before, but let's go over this file more or less line by line. The first field you see is
 
-In venmo.hjs, when you see
+		<title>{{title}}<title>
+
+The <title> tag determines, you guessed it, the title of the page, and the syntax {{variable}} means that the actual content is determined dynamically in your node app. The next variable, {{message}}, is determined in venmo.js by whether  So, if you remember in the last block of code,
+	
+		req.session.message = "Sent $' + req.body.amount + ' to ' + req.body.phone = ' successfully';
+
+This sets the message that then is shown. So, in venmo.hjs, when you see
 
 		{{#message}}
 			<h3>{{message}}</h3>
 		{{/message}}
 
-You're taking req.session.message and inserting it into {{message}} in venmo.hjs!
+You're taking req.session.message and inserting it into {{message}} in venmo.hjs! To be more accurate, the .hjs is first looking to see if the message field is present, and then printing out the contents (in this case, the <h3> element, if it is, in fact, present.
 
-Take note that the field
+This becomes more important at the next "if statement",
+		{{#venmo}}
+			code
+		{{/venmo}}
 
-{{#venmo}} means "if this field is present, show the following,"and the field
+There's a lot of code between these tags, and none of it is shown unless the "venmo" field, denoting that the user has authenticated, is present. This is important, because not only does the venmo variable decide what would be shown if you happened to include {{venmo}} as part of the text, but it actually acts as an if statement for what should be shown to the user.
 
-{{/venmo}} means "if this field is not present, show the following."
+So, let's assume that the user has authenticated. In this case, it show the fields {{display_name}} and {{username}}, and most importantly, includes a <form>. Let's see the whole thing: 
 
+		<form action='/venmo/send' method='post'>
+			Pay $<input type='text' name='amount' placeholder='Amount in dollars'> to
+			<input type='text' name='phone' placeholder='Phone Number'> for:<br/>
+			<textarea name='note' rows='3' cols='80' placeholder='For...'></textarea>			<br/>
+			<input type='submit' name='Send Payment'>
+		</form>
 
-	
+The form action designates what type of call the the browser will make when the form is submitted. In this case, the form is for the user to actually make a payment, and we have a venmo.js route that we created to handle a POST request to /venmo/send, so we want the browser to send the request to that URL (action='/venmo/send'), with POST (method='post').
+
+In this form, there are 3 input fields. The first is the total amount of money being transfered. While we will parse it as a decimal, its input type='text'. The 'name' field we use to tell our app what variable it is assigned to, so we can access it in venmo.js. The placeholder, as you can probably tell, determines what is shown when the user has not yet typed anything in.
+
+The next form is, by most measures, the same. Make sure to note, however, that the field name is assigned the value 'phone', again so we can reference the input as a variable by that name in venmo.js. The third field is of type <textarea> instead of type <input>. The biggest difference between a textarea and an input to understand is that a textarea has better accounting for large input of paragraph-length. Note that we specify the field rows='3', and cols='80'. Thus, unlike an <input>, we can guess that this field might be a sentence or two but probably no longer, and tailor the size of hte textfield to that. Furthermore, it handles newlines well, so the user can happily use multiple paragraphs.
+
+The final important piece of your form is 
+		<input type='submit' name='Send Payment.'>
+Note that the type='submit' field is not specifying a variable, but is a keyword in your form that your browser knows to interpret as a submission of the form. the name field determines what is shown on the button. Because this submit button is within the same form as the other input fields (see that it comes before the ending </form> tag), it will submit everything within that form.
+
+Notice now the end tag {{/venmo}}. This is the end of our if statement. i.e., if the user hadn't authenticated yet, she would have seen none of what we just went over. Now, on the next lines, we see
+
+		{{^venmo}}
+			<p>You have not authorized yet. <a href='authorize>Click here</a> to authorize with Venmo.</p>
+		{{/venmo}}
+
+So, if {{#venmo}} is the beginning of an if statement, {{^venmo}} is the beginning of an "if not" statement. Thus, the first time your user sees a venmo page, since they will not yet have authenticated, this statement will return "true", and they'll be given the link to the "authorize" page, and be allowed to authorize. Very tricky, very cool. As always, make sure to end your if with a {{/venmo}}, just like you always remember to end your <strong> tags, right? Right. ... </strong>
+
 
