@@ -31,12 +31,15 @@ We'll use the express router.
 
 Now we get into config with Venmo. We need Venmo to know our requests are legit, so you'll need to be a venmo developer. You can do that [here.] (https://venmo.com/w/signup?from=oauth&client_id=1494&response_type=code&scope=access_feed,access_profile,access_email,access_phone,access_friends,make_payments,write_apps,access_webhooks,write_webhooks&state=/docs/authentication?) 
 
-Once you've done that, make a new application, and it'll give you the iD and the secret. Make sure as well to set Web Redirect Url, under the application page, to "http://localhost:300/venmo/oauth" Whether or not you've gone through with that, let's go over the rest of the code.
+Once you've done that, make a new application, and it'll give you the iD and the secret. Make sure as well to set Web Redirect Url, under the application page, to 
+		"http://localhost:300/venmo/oauth" 
+		
+Whether or not you've gone through with that, let's go over the rest of the code.
 
 First off after the five lines of Venmo config are three separate routes, for
-        /
-		/authorize
-		/oauth
+		/ , the root venmo page
+		/authorize , where the user is sent to sign in with venmo,
+		/oaut , where venmo then checks you out as a developer.
  
 As you know, each of these routes is activated when the proper URL is requested by your app's adoring fans. As ay reminder, the fact that the function call is "router.get" does not mean you're "getting" something from the router (like Java's ArrayList.get(),) it means it's responding to a HTTP GET call from the browser.
 
@@ -70,7 +73,7 @@ This takes the form of another POST request to Venmo's API. You send them the re
 
 Take a peek at this portion of the function here and in context in venmo.js. First, it checks to see if venmo returned an error. If not, it continues, and parses the Venmo response for user data. Finally, it prints a message to the user telling them that the payment was successful as it redirects them back to the root venmo page!
 
-###OKAY but we're not done that.
+###OKAY but we're not done yet.
 
 So, especially if you learned HTML/CSS earlier in this file, you may be wondering, "what actually is determining what the user sees at page /vemno?" What a great question. They're seeing views/venmo.hjs!
 
